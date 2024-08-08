@@ -3,13 +3,14 @@ import pickle
 import numpy as np
 import os
 
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
 facedetect=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
-
 faces_data = []
-
 i=0
+
 name=input("Enter Your Name: ")
+rollNo=input("Enter Your RollNo: ")
+name=name+'_'+rollNo
 
 while True:
     ret,frame=video.read()
@@ -24,9 +25,11 @@ while True:
         cv2.putText(frame, str(len(faces_data)),(50,50),cv2.FONT_HERSHEY_COMPLEX,1,(50,50,255),1)
         cv2.rectangle(frame,(x,y),(x+w,y+h),(50,50,255),1)
     cv2.imshow("Frame",frame)
+
     k=cv2.waitKey(1)
     if k==ord('q') or len(faces_data)==100:
         break
+
 video.release()
 cv2.destroyAllWindows()
 
