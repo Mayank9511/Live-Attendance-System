@@ -1,5 +1,4 @@
 from sklearn.neighbors import KNeighborsClassifier
-
 import cv2
 import pickle
 import numpy as np
@@ -14,8 +13,7 @@ def speak(str1):
     speak=Dispatch(("SAPI.SpVoice"))
     speak.Speak(str1)
 
-
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
 facedetect=cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 with open('data/names.pkl', 'rb') as f:
@@ -25,10 +23,9 @@ with open('data/face_data.pkl', 'rb') as f:
 
 knn=KNeighborsClassifier(n_neighbors=5)
 knn.fit(FACES, LABELS)
-
 imBackground = cv2.imread("bg6.png")
 
-COL_NAMES = ['Name','Time']
+COL_NAMES = ['RollNo','Name','Time']
 
 while True:
     ret,frame=video.read()
@@ -46,11 +43,11 @@ while True:
         cv2.rectangle(frame, (x,y), (x+w,y+h), (0,0,255),1)
         cv2.rectangle(frame, (x,y), (x+w,y+h), (50,50,255),2)
         cv2.rectangle(frame, (x,y-40), (x+w,y), (50,50,255),-1)
-        cv2.putText(frame,str(output[0]),(x,y-15),cv2.FONT_HERSHEY_COMPLEX, 1, (255,255,255),1 )
+        sheet_name, sheet_rollNo = str(output[0]).split('_')
+        cv2.putText(frame,sheet_name,(x,y-15),cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0),1 )
         cv2.rectangle(frame,(x,y),(x+w,y+h),(50,50,255),1)
-        attendance=[str(output[0]),str(timestamp)]
+        attendance=[sheet_rollNo,sheet_name,str(timestamp)]
     imBackground[162:162 + 480, 55:55 + 640] = frame 
-    # imBackground[250:250 + 680, 150:150 + 760] = frame 
     cv2.imshow("Frame",imBackground)
     k=cv2.waitKey(1)
     if k==ord('t'):
@@ -71,4 +68,3 @@ while True:
         break
 video.release()
 cv2.destroyAllWindows()
- 
